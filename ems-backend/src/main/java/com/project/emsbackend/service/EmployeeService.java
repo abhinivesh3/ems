@@ -1,18 +1,19 @@
 package com.project.emsbackend.service;
 
 import com.project.emsbackend.dto.EmployeeDto;
+import com.project.emsbackend.entity.Employee;
 import com.project.emsbackend.exception.ResourceNotFoundException;
 
 import java.util.List;
 
 public interface EmployeeService {
-    EmployeeDto createEmployee(EmployeeDto employeeDto);
+    Employee createEmployee(Employee employee);
 
-    EmployeeDto getEmployeeById(Long employeeId) throws ResourceNotFoundException;
+    Employee getEmployeeById(Long employeeId) throws ResourceNotFoundException;
 
-    List<EmployeeDto> getAllEmployees();
+    List<Employee> getAllEmployees();
 
-    EmployeeDto updateEmployee(Long employeeId,EmployeeDto updatedEmployee) throws ResourceNotFoundException;
+    Employee updateEmployee(Long employeeId,Employee updatedEmployee) throws ResourceNotFoundException;
 
     void deleteEmployee(Long employeeId) throws ResourceNotFoundException;
 }

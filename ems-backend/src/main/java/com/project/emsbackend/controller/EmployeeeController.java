@@ -1,57 +1,60 @@
 package com.project.emsbackend.controller;
 
-import com.project.emsbackend.dto.EmployeeDto;
+import com.project.emsbackend.entity.Employee;
 import com.project.emsbackend.exception.ResourceNotFoundException;
 import com.project.emsbackend.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/employees")
 public class EmployeeeController {
     @Autowired
     private EmployeeService employeeService;
 
     //Add Employee
-    @PostMapping
-    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto){
-        EmployeeDto savedEmployee= employeeService.createEmployee(employeeDto);
-        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+    @PostMapping("/employees")
+    public String saveEmployee( @ModelAttribute("employee") Employee employee){
+        employeeService.createEmployee(employee);
+        return "redirect:/employees";
     }
 
+    @GetMapping("/employees/new")
+    public String createEmployeeForm(Model model){
+        Employee employee=new Employee();
+        model.addAttribute("employee",employee);
+        return "create_employee";
+    }
     //Get Employee
 
-    @GetMapping("{id}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId) throws ResourceNotFoundException {
-        EmployeeDto employeeDto=employeeService.getEmployeeById(employeeId);
-        return ResponseEntity.ok(employeeDto);
+    @GetMapping("/employees/edit/{id}")
+    public String getEmployeeById(@PathVariable("id") Long employeeId,Model model) throws ResourceNotFoundException {
+        model.addAttribute("employee",employeeService.getEmployeeById(employeeId));
+        return "edit_employee";
     }
 
     // Get All Employees
 
-    @GetMapping
-    public ResponseEntity<List<EmployeeDto>> getAllEmployee(){
-        List<EmployeeDto> employeeDtos=employeeService.getAllEmployees();
-        return ResponseEntity.ok(employeeDtos);
+    @GetMapping("/employees")
+    public String listEmployee(Model model){
+       model.addAttribute("employees",employeeService.getAllEmployees());
+        return "employees";
     }
 
     // Update Employee
-    @PutMapping("{id}")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId,@RequestBody EmployeeDto updateEmployee) throws ResourceNotFoundException {
-        EmployeeDto employeeDto=employeeService.updateEmployee(employeeId,updateEmployee);
-        return ResponseEntity.ok(employeeDto);
+    @PutMapping("/employees/{id}")
+    public String updateEmployee(@PathVariable("id") Long employeeId,@ModelAttribute("employee") Employee updateEmployee,Model model) throws ResourceNotFoundException {
+        employeeService.updateEmployee(employeeId,updateEmployee);
+        return "redirect:/employees";
     }
 
     //delete Employee
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId) throws ResourceNotFoundException {
+    @DeleteMapping("/employees/{id}")
+    public String deleteEmployee(@PathVariable("id") Long employeeId) throws ResourceNotFoundException {
         employeeService.deleteEmployee(employeeId);
-        return ResponseEntity.ok("Employee deleted successfully!.");
+        return "redirect:/employees";
     }
 }

@@ -20,32 +20,36 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-        Employee employee= EmployeeMapper.maptoEmployee(employeeDto);
+    public Employee createEmployee(Employee employee) {
+        //Employee employee= EmployeeMapper.maptoEmployee(employeeDto);
         Employee saveEmployee= employeeRepository.save(employee);
-        return EmployeeMapper.maptoEmployeeDto(saveEmployee);
+        // EmployeeMapper.maptoEmployeeDto(saveEmployee);
+        return saveEmployee;
     }
 
     @Override
-    public EmployeeDto getEmployeeById(Long employeeId) throws ResourceNotFoundException {
+    public Employee getEmployeeById(Long employeeId) throws ResourceNotFoundException {
         Employee employee=employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee is not exist with given id : "+employeeId));
-        return EmployeeMapper.maptoEmployeeDto(employee);
+        //return EmployeeMapper.maptoEmployeeDto(employee);
+        return employee;
     }
 
     @Override
-    public List<EmployeeDto> getAllEmployees() {
+    public List<Employee> getAllEmployees() {
         List<Employee> employees=employeeRepository.findAll();
-        return employees.stream().map((employee) -> EmployeeMapper.maptoEmployeeDto(employee)).collect(Collectors.toList());
+        //return employees.stream().map((employee) -> EmployeeMapper.maptoEmployeeDto(employee)).collect(Collectors.toList());
+        return employees;
     }
 
     @Override
-    public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) throws ResourceNotFoundException {
+    public Employee updateEmployee(Long employeeId, Employee updatedEmployee) throws ResourceNotFoundException {
         Employee employee=employeeRepository.findById(employeeId).orElseThrow(()->new ResourceNotFoundException("Employee is not exists with given id:"+employeeId));
         employee.setFirstName(updatedEmployee.getFirstName());
         employee.setLastName(updatedEmployee.getLastName());
         employee.setEmail(updatedEmployee.getEmail());
-        Employee UpdatedemployeeObj=employeeRepository.save(employee);
-        return EmployeeMapper.maptoEmployeeDto(UpdatedemployeeObj);
+        Employee updatedemployeeObj=employeeRepository.save(employee);
+        //return EmployeeMapper.maptoEmployeeDto(UpdatedemployeeObj);
+        return updatedemployeeObj;
     }
 
     @Override
